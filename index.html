@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturing Marketing Intelligence Suite</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .tool-selector {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .tool-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            background: #f4f4f4;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .tab-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .tool-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            min-height: 600px;
+        }
+
+        .tool-panel {
+            display: none;
+        }
+
+        .tool-panel.active {
+            display: block;
+        }
+
+        .tool-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tool-header h2 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .tool-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-center {
+            display: block;
+            margin: 30px auto;
+        }
+
+        .results {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .metric-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(#667eea 0%, #667eea var(--percentage), #e0e0e0 var(--percentage));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .score-circle::after {
+            content: '';
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .score-text {
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .recommendation {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .lead-capture {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .lead-capture h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .lead-capture input {
+            margin: 10px;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            width: 200px;
+        }
+
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .assessment-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .video-timeline {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .video-week {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .tool-tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Manufacturing Marketing Intelligence Suite</h1>
+            <p>7 Powerful Tools to Transform Your Lead Generation Strategy</p>
+        </div>
+
+        <div class="tool-selector">
+            <div class="tool-tabs">
+                <button class="tab-btn active" onclick="switchTool('roi-calculator')">ROI Calculator</button>
+                <button class="tab-btn" onclick="switchTool('maturity-assessment')">Marketing Maturity</button>
+                <button class="tab-btn" onclick="switchTool('content-gap')">Content Gap Analysis</button>
+                <button class="tab-btn" onclick="switchTool('tradeshow-vs-digital')">Trade Show vs Digital</button>
+                <button class="tab-btn" onclick="switchTool('video-planner')">Video Strategy</button>
+                <button class="tab-btn" onclick="switchTool('competitor-analysis')">Competitor Analysis</button>
+                <button class="tab-btn" onclick="switchTool('lead-scoring')">Lead Scoring</button>
+            </div>
+        </div>
+
+        <div class="tool-content">
+            <!-- ROI Calculator -->
+            <div id="roi-calculator" class="tool-panel active">
+                <div class="tool-header">
+                    <h2>🔧 AI-Powered ROI Calculator</h2>
+                    <p>Calculate the true ROI of your process equipment investment</p>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Equipment Purchase Price ($)</label>
+                        <input type="number" id="equipment-cost" placeholder="500000">
+                    </div>
+                    <div class="form-group">
+                        <label>Annual Maintenance Cost ($)</label>
+                        <input type="number" id="maintenance-cost" placeholder="25000">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Current Annual Production (units)</label>
+                        <input type="number" id="current-production" placeholder="100000">
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Production Increase (%)</label>
+                        <input type="number" id="production-increase" placeholder="15">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Revenue per Unit ($)</label>
+                        <input type="number" id="revenue-per-unit" placeholder="50">
+                    </div>
+                    <div class="form-group">
+                        <label>Energy Savings per Year ($)</label>
+                        <input type="number" id="energy-savings" placeholder="15000">
+                    </div>
+                </div>
+                
+                <button class="btn btn-center" onclick="calculateROI()">Calculate ROI</button>
+                
+                <div id="roi-results" class="results">
+                    <h3>ROI Analysis Results</h3>
+                    <div class="metric">
+                        <span class="metric-label">Payback Period</span>
+                        <span class="metric-value" id="payback-period">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Annual ROI</span>
+                        <span class="metric-value" id="annual-roi">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">5-Year Net Present Value</span>
+                        <span class="metric-value" id="npv">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Total 5-Year Savings</span>
+                        <span class="metric-value" id="total-savings">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marketing Maturity Assessment -->
+            <div id="maturity-assessment" class="tool-panel">
+                <div class="tool-header">
+                    <h2>📊 Digital Marketing Maturity Assessment</h2>
+                    <p>Assess your current digital marketing capabilities</p>
+                </div>
+                
+                <div class="assessment-grid">
+                    <div class="assessment-card">
+                        <h4>Website & SEO</h4>
+                        <div class="form-group">
+                            <label>Do you rank in top 3 for your main keywords?</label>
+                            <select id="seo-ranking">
+                                <option value="0">No rankings</option>
+                                <option value="1">Page 2-3 rankings</option>
+                                <option value="2">Some page 1 rankings</option>
+                                <option value="3">Multiple top 3 rankings</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="assessment-card">
+                        <h4>Content Marketing</h4>
+                        <div class="form-group">
+                            <label>How often do you publish technical content?</label>
+                            <select id="content-frequency">
+                                <option value="0">Never</option>
+                                <option value="1">Quarterly</option>
+                                <option value="2">Monthly</option>
+                                <option value="3">Weekly</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="assessment-card">
+                        <h4>Social Media</h4>
+                        <div class="form-group">
+                            <label>LinkedIn engagement level</label>
+                            <select id="social-engagement">
+                                <option value="0">No presence</option>
+                                <option value="1">Basic company page</option>
+                                <option value="2">Regular posts</option>
+                                <option value="3">High engagement</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="assessment-card">
+                        <h4>Lead Generation</h4>
+                        <div class="form-group">
+                            <label>Monthly qualified leads from digital</label>
+                            <select id="digital-leads">
+                                <option value="0">0-2 leads</option>
+                                <option value="1">3-10 leads</option>
+                                <option value="2">11-25 leads</option>
+                                <option value="3">25+ leads</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="assessment-card">
+                        <h4>Video Marketing</h4>
+                        <div class="form-group">
+                            <label>Technical video content</label>
+                            <select id="video-content">
+                                <option value="0">No videos</option>
+                                <option value="1">Basic product videos</option>
+                                <option value="2">Some educational content</option>
+                                <option value="3">Comprehensive video strategy</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="assessment-card">
+                        <h4>Marketing Automation</h4>
+                        <div class="form-group">
+                            <label>Lead nurturing system</label>
+                            <select id="automation">
+                                <option value="0">Manual follow-up</option>
+                                <option value="1">Basic email sequences</option>
+                                <option value="2">Segmented campaigns</option>
+                                <option value="3">AI-powered automation</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-center" onclick="assessMaturity()">Get My Maturity Score</button>
+                
+                <div id="maturity-results" class="results">
+                    <h3>Your Digital Marketing Maturity Score</h3>
+                    <div class="score-circle" id="maturity-circle">
+                        <div class="score-text" id="maturity-score">0%</div>
+                    </div>
+                    <div id="maturity-recommendations"></div>
+                </div>
+            </div>
+
+            <!-- Content Gap Analyzer -->
+            <div id="content-gap" class="tool-panel">
+                <div class="tool-header">
+                    <h2>🔍 Technical Content Gap Analyzer</h2>
+                    <p>Discover what content your prospects are searching for</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Primary Equipment Category</label>
+                    <select id="equipment-category">
+                        <option value="">Select Category</option>
+                        <option value="chemical-processing">Chemical Processing Equipment</option>
+                        <option value="food-processing">Food Processing Equipment</option>
+                        <option value="pharmaceutical">Pharmaceutical Equipment</option>
+                        <option value="water-treatment">Water Treatment Systems</option>
+                        <option value="hvac-industrial">Industrial HVAC Systems</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Target Industry</label>
+                        <select id="target-industry">
+                            <option value="">Select Industry</option>
+                            <option value="chemical">Chemical Manufacturing</option>
+                            <option value="food-beverage">Food & Beverage</option>
+                            <option value="pharmaceutical">Pharmaceutical</option>
+                            <option value="oil-gas">Oil & Gas</option>
+                            <option value="water-treatment">Water Treatment</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Company Size</label>
+                        <select id="company-size">
+                            <option value="">Select Size</option>
+                            <option value="small">Small (1-100 employees)</option>
+                            <option value="medium">Medium (101-500 employees)</option>
+                            <option value="large">Large (500+ employees)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-center" onclick="analyzeContentGap()">Analyze Content Opportunities</button>
+                
+                <div id="content-results" class="results">
+                    <h3>Content Gap Analysis Results</h3>
+                    <div id="content-opportunities"></div>
+                </div>
+            </div>
+
+            <!-- Trade Show vs Digital -->
+            <div id="tradeshow-vs-digital" class="tool-panel">
+                <div class="tool-header">
+                    <h2>📈 Trade Show vs Digital Marketing ROI</h2>
+                    <p>Compare your current trade show costs with digital marketing potential</p>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Annual Trade Show Budget ($)</label>
+                        <input type="number" id="tradeshow-budget" placeholder="150000">
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Trade Shows per Year</label>
+                        <input type="number" id="tradeshow-count" placeholder="3">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Leads Generated per Trade Show</label>
+                        <input type="number" id="leads-per-show" placeholder="25">
+                    </div>
+                    <div class="form-group">
+                        <label>Lead to Customer Conversion Rate (%)</label>
+                        <input type="number" id="conversion-rate" placeholder="8">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Average Customer Value ($)</label>
+                    <input type="number" id="customer-value" placeholder="75000">
+                </div>
+                
+                <button class="btn btn-center" onclick="compareTradeShowVsDigital()">Compare ROI</button>
+                
+                <div id="comparison-results" class="results">
+                    <h3>Trade Show vs Digital Marketing Comparison</h3>
+                    <div id="comparison-metrics"></div>
+                </div>
+            </div>
+
+            <!-- Video Strategy Planner -->
+            <div id="video-planner" class="tool-panel">
+                <div class="tool-header">
+                    <h2>🎥 Video Content Strategy Planner</h2>
+                    <p>Generate a 90-day video content roadmap for your expertise</p>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Primary Expertise Area</label>
+                        <input type="text" id="expertise-area" placeholder="Chemical Processing Optimization">
+                    </div>
+                    <div class="form-group">
+                        <label>Target Audience Role</label>
+                        <select id="audience-role">
+                            <option value="">Select Primary Audience</option>
+                            <option value="engineers">Process Engineers</option>
+                            <option value="managers">Plant Managers</option>
+                            <option value="procurement">Procurement Directors</option>
+                            <option value="executives">C-Suite Executives</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Video Production Capacity</label>
+                        <select id="video-capacity">
+                            <option value="">Select Capacity</option>
+                            <option value="low">1-2 videos per month</option>
+                            <option value="medium">3-4 videos per month</option>
+                            <option value="high">5+ videos per month</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Main Business Challenge to Address</label>
+                        <select id="business-challenge">
+                            <option value="">Select Challenge</option>
+                            <option value="efficiency">Process Efficiency</option>
+                            <option value="compliance">Regulatory Compliance</option>
+                            <option value="cost-reduction">Cost Reduction</option>
+                            <option value="safety">Safety Improvements</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-center" onclick="generateVideoStrategy()">Generate Video Strategy</button>
+                
+                <div id="video-results" class="results">
+                    <h3>Your 90-Day Video Content Strategy</h3>
+                    <div id="video-timeline"></div>
+                </div>
+            </div>
+
+            <!-- Competitor Analysis -->
+            <div id="competitor-analysis" class="tool-panel">
+                <div class="tool-header">
+                    <h2>🕵️ Competitor Digital Presence Analyzer</h2>
+                    <p>See how your competitors are winning online</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Your Company Name</label>
+                    <input type="text" id="company-name" placeholder="Your Company Name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Top 3 Competitors (separate with commas)</label>
+                    <input type="text" id="competitors" placeholder="Competitor A, Competitor B, Competitor C">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Your Industry Segment</label>
+                        <select id="industry-segment">
+                            <option value="">Select Segment</option>
+                            <option value="process-equipment">Process Equipment</option>
+                            <option value="industrial-automation">Industrial Automation</option>
+                            <option value="chemical-processing">Chemical Processing</option>
+                            <option value="food-processing">Food Processing</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Geographic Market</label>
+                        <select id="geographic-market">
+                            <option value="">Select Market</option>
+                            <option value="north-america">North America</option>
+                            <option value="europe">Europe</option>
+                            <option value="global">Global</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-center" onclick="analyzeCompetitors()">Analyze Competitor Presence</button>
+                
+                <div id="competitor-results" class="results">
+                    <h3>Competitive Digital Analysis</h3>
+                    <div id="competitor-insights"></div>
+                </div>
+            </div>
+
+            <!-- Lead Scoring Framework -->
+            <div id="lead-scoring" class="tool-panel">
+                <div class="tool-header">
+                    <h2>🎯 Lead Quality Scoring Framework</h2>
+                    <p>Create a systematic approach to qualify and prioritize leads</p>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Minimum Company Size (employees)</label>
+                        <input type="number" id="min-company-size" placeholder="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Minimum Annual Revenue ($)</label>
+                        <input type="number" id="min-revenue" placeholder="10000000">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Target Industries (select all that apply)</label>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
+                        <label><input type="checkbox" value="chemical"> Chemical Manufacturing</label>
+                        <label><input type="checkbox" value="food"> Food & Beverage</label>
+                        <label><input type="checkbox" value="pharma"> Pharmaceutical</label>
+                        <label><input type="checkbox" value="oil-gas"> Oil & Gas</label>
+                        <label><input type="checkbox" value="water"> Water Treatment</label>
+                        <label><input type="checkbox" value="mining"> Mining</label>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Primary Decision Maker Title</label>
+                        <select id="decision-maker">
+                            <option value="">Select Title</option>
+                            <option value="engineer">Chief Engineer</option>
+                            <option value="operations">Operations Director</option>
+                            <option value="plant-manager">Plant Manager</option>
+                            <option value="procurement">Procurement Director</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Typical Project Budget Range ($)</label>
+                        <select id="budget-range">
+                            <option value="">Select Range</option>
+                            <option value="100k-500k">$100K - $500K</option>
+                            <option value="500k-2m">$500K - $2M</option>
+                            <option value="2m-10m">$2M - $10M</option>
+                            <option value="10m+">$10M+</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-center" onclick="generateLeadScoring()">Generate Lead Scoring Framework</button>
+                
+                <div id="scoring-results" class="results">
+                    <h3>Your Lead Scoring Framework</h3>
+                    <div id="scoring-framework"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lead-capture">
+            <h3>Get Your Complete Analysis Report</h3>
+            <p>Enter your details to receive a comprehensive PDF report with all your results and recommendations</p>
+            <div style="margin-top: 20px;">
+                <input type="text" id="lead-name" placeholder="Your Name" style="margin: 5px;">
+                <input type="email" id="lead-email" placeholder="Your Email" style="margin: 5px;">
+                <input type="text" id="lead-company" placeholder="Company Name" style="margin: 5px;">
+                <button class="btn" onclick="captureLeadAndDownload()" style="margin: 5px;">Download Complete Report</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTool(toolId) {
+            // Hide all panels
+            document.querySelectorAll('.tool-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected panel
+            document.getElementById(toolId).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function calculateROI() {
+            const equipmentCost = parseFloat(document.getElementById('equipment-cost').value) || 0;
+            const maintenanceCost = parseFloat(document.getElementById('maintenance-cost').value) || 0;
+            const currentProduction = parseFloat(document.getElementById('current-production').value) || 0;
+            const productionIncrease = parseFloat(document.getElementById('production-increase').value) || 0;
+            const revenuePerUnit = parseFloat(document.getElementById('revenue-per-unit').value) || 0;
+            const energySavings = parseFloat(document.getElementById('energy-savings').value) || 0;
+            
+            // Calculate additional revenue from increased production
+            const additionalUnits = currentProduction * (productionIncrease / 100);
+            const additionalRevenue = additionalUnits * revenuePerUnit;
+            
+            // Calculate total annual benefits
+            const totalAnnualBenefit = additionalRevenue + energySavings - maintenanceCost;
+            
+            // Calculate payback period
+            const paybackPeriod = equipmentCost / totalAnnualBenefit;
+            
+            // Calculate annual ROI
+            const annualROI = (totalAnnualBenefit / equipmentCost) * 100;
+            
+            // Calculate 5-year NPV (assuming 8% discount rate)
+            const discountRate = 0.08;
+            let npv = -equipmentCost;
+            for (let i = 1; i <= 5; i++) {
+                npv += totalAnnualBenefit / Math.pow(1 + discountRate, i);
+            }
+            
+            // Calculate total 5-year savings
+            const totalSavings = (totalAnnualBenefit * 5) - equipmentCost;
+            
+            // Display results
+            document.getElementById('payback-period').textContent = paybackPeriod.toFixed(1) + ' years';
+            document.getElementById('annual-roi').textContent = annualROI.toFixed(1) + '%';
+            document.getElementById('npv').textContent = '$' + npv.toLocaleString();
+            document.getElementById('total-savings').textContent = '$' + totalSavings.toLocaleString();
+            
+            document.getElementById('roi-results').classList.add('show');
+        }
+
+        function assessMaturity() {
+            const scores = {
+                seo: parseInt(document.getElementById('seo-ranking').value) || 0,
+                content: parseInt(document.getElementById('content-frequency').value) || 0,
+                social: parseInt(document.getElementById('social-engagement').value) || 0,
+                leads: parseInt(document.getElementById('digital-leads').value) || 0,
+                video: parseInt(document.getElementById('video-content').value) || 0,
+                automation: parseInt(document.getElementById('automation').value) || 0
+            };
+            
+            const totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
+            const maxScore = 18; // 6 categories × 3 max points each
+            const percentage = Math.round((totalScore / maxScore) * 100);
+            
+            // Update score circle
+            const circle = document.getElementById('maturity-circle');
+            circle.style.setProperty('--percentage', percentage + '%');
+            document.getElementById('maturity-score').textContent = percentage + '%';
+            
+            // Generate recommendations
+            let recommendations = '<h4>Recommendations:</h4>';
+            
+            if (scores.seo < 2) {
+                recommendations += '<div class="recommendation">🎯 Priority: Improve SEO rankings with technical content optimization</div>';
+            }
+            if (scores.content < 2) {
+                recommendations += '<div class="recommendation">📝 Priority: Develop consistent technical content publishing schedule</div>';
+            }
+            if (scores.video < 2) {
+                recommendations += '<div class="recommendation">🎥 Priority: Implement video marketing strategy for technical expertise</div>';
+            }
+            if (scores.leads < 2) {
+                recommendations += '<div class="warning">⚠️ Critical: Digital lead generation needs immediate attention</div>';
+            }
+            
+            if (percentage < 40) {
+                recommendations += '<div class="warning">⚠️ Your digital marketing maturity is significantly behind industry standards. Immediate action required.</div>';
+            } else if (percentage < 70) {
+                recommendations += '<div class="recommendation">📈 Good foundation, but significant room for improvement to match leading competitors.</div>';
+            } else {
+                recommendations += '<div class="recommendation">✅ Strong digital marketing foundation. Focus on optimization and advanced strategies.</div>';
+            }
+            
+            document.getElementById('maturity-recommendations').innerHTML = recommendations;
+            document.getElementById('maturity-results').classList.add('show');
+        }
+
+        function analyzeContentGap() {
+            const category = document.getElementById('equipment-category').value;
+            const industry = document.getElementById('target-industry').value;
+            const size = document.getElementById('company-size').value;
+            
+            if (!category || !industry) {
+                alert('Please select equipment category and target industry');
+                return;
+            }
+            
+            // Mock content gap analysis results
+            const contentOpportunities = {
+                'chemical-processing': {
+                    'chemical': [
+                        'How to optimize reaction vessel efficiency',
+                        'Chemical process safety compliance checklist',
+                        'ROI analysis: Automated vs manual chemical processing',
+                        'Reducing chemical waste through process optimization'
+                    ]
+                },
+                'food-processing': {
+                    'food-beverage': [
+                        'FDA compliance for food processing equipment',
+                        'Sanitary design principles for food processing',
+                        'Energy efficiency in food production lines',
+                        'Automated quality control systems'
+                    ]
+                }
+            };
+            
+            const defaultOpportunities = [
+                'Equipment selection criteria for your industry',
+                'ROI justification templates and calculators',
+                'Compliance and safety best practices',
+                'Case studies from similar applications',
+                'Technical specification comparison guides',
+                'Maintenance and optimization strategies'
+            ];
+            
+            const opportunities = contentOpportunities[category]?.[industry] || defaultOpportunities;
+            
+            let html = '<h4>High-Value Content Opportunities:</h4>';
+            opportunities.forEach((opportunity, index) => {
+                html += `<div class="metric">
+                    <span class="metric-label">${opportunity}</span>
+                    <span class="metric-value">High Impact</span>
+                </div>`;
+            });
+            
+            html += '<div class="recommendation">💡 These content topics have high search volume and low competition in your space.</div>';
+            
+            document.getElementById('content-opportunities').innerHTML = html;
+            document.getElementById('content-results').classList.add('show');
+        }
+
+        function compareTradeShowVsDigital() {
+            const tradeshowBudget = parseFloat(document.getElementById('tradeshow-budget').value) || 0;
+            const tradeshowCount = parseFloat(document.getElementById('tradeshow-count').value) || 0;
+            const leadsPerShow = parseFloat(document.getElementById('leads-per-show').value) || 0;
+            const conversionRate = parseFloat(document.getElementById('conversion-rate').value) || 0;
+            const customerValue = parseFloat(document.getElementById('customer-value').value) || 0;
+            
+            // Trade show calculations
+            const totalTradeshowLeads = tradeshowCount * leadsPerShow;
+            const tradeshowCustomers = totalTradeshowLeads * (conversionRate / 100);
+            const tradeshowRevenue = tradeshowCustomers * customerValue;
+            const tradeshowCostPerLead = tradeshowBudget / totalTradeshowLeads;
+            const tradeshowROI = ((tradeshowRevenue - tradeshowBudget) / tradeshowBudget) * 100;
+            
+            // Digital marketing projections (conservative estimates)
+            const digitalBudget = tradeshowBudget * 0.6; // 60% of trade show budget
+            const digitalLeadsPerMonth = 20; // Conservative estimate
+            const digitalLeadsPerYear = digitalLeadsPerMonth * 12;
+            const digitalConversionRate = conversionRate * 1.2; // Slightly higher due to better qualification
+            const digitalCustomers = digitalLeadsPerYear * (digitalConversionRate / 100);
+            const digitalRevenue = digitalCustomers * customerValue;
+            const digitalCostPerLead = digitalBudget / digitalLeadsPerYear;
+            const digitalROI = ((digitalRevenue - digitalBudget) / digitalBudget) * 100;
+            
+            let html = `
+                <div class="metric">
+                    <span class="metric-label">Trade Show - Total Annual Leads</span>
+                    <span class="metric-value">${totalTradeshowLeads}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Digital Marketing - Projected Annual Leads</span>
+                    <span class="metric-value">${digitalLeadsPerYear}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Trade Show - Cost per Lead</span>
+                    <span class="metric-value">$${tradeshowCostPerLead.toLocaleString()}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Digital Marketing - Cost per Lead</span>
+                    <span class="metric-value">$${digitalCostPerLead.toLocaleString()}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Trade Show - Annual ROI</span>
+                    <span class="metric-value">${tradeshowROI.toFixed(1)}%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Digital Marketing - Projected ROI</span>
+                    <span class="metric-value">${digitalROI.toFixed(1)}%</span>
+                </div>
+            `;
+            
+            const savings = tradeshowBudget - digitalBudget;
+            const additionalLeads = digitalLeadsPerYear - totalTradeshowLeads;
+            
+            if (digitalROI > tradeshowROI) {
+                html += `<div class="recommendation">
+                    🚀 Digital marketing could deliver ${(digitalROI - tradeshowROI).toFixed(1)}% better ROI, 
+                    generate ${additionalLeads} more leads annually, and save $${savings.toLocaleString()} in budget.
+                </div>`;
+            }
+            
+            document.getElementById('comparison-metrics').innerHTML = html;
+            document.getElementById('comparison-results').classList.add('show');
+        }
+
+        function generateVideoStrategy() {
+            const expertise = document.getElementById('expertise-area').value;
+            const audience = document.getElementById('audience-role').value;
+            const capacity = document.getElementById('video-capacity').value;
+            const challenge = document.getElementById('business-challenge').value;
+            
+            if (!expertise || !audience || !capacity) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            const videoStrategies = {
+                'engineers': {
+                    'efficiency': [
+                        'Technical deep-dive: Process optimization techniques',
+                        'Case study: 25% efficiency improvement implementation',
+                        'Expert interview: Advanced process control strategies'
+                    ],
+                    'compliance': [
+                        'Regulatory compliance checklist walkthrough',
+                        'Documentation best practices for audits',
+                        'Common compliance mistakes and how to avoid them'
+                    ]
+                }
+            };
+            
+            const defaultStrategy = [
+                'Week 1-2: "Introduction to Advanced Process Techniques"',
+                'Week 3-4: "ROI Analysis: Traditional vs Modern Approaches"',
+                'Week 5-6: "Case Study: Successful Implementation"',
+                'Week 7-8: "Common Mistakes and How to Avoid Them"',
+                'Week 9-10: "Future Trends in Process Equipment"',
+                'Week 11-12: "Q&A: Technical Expert Roundtable"'
+            ];
+            
+            let html = '<div class="video-timeline">';
+            html += '<h4>90-Day Video Content Calendar</h4>';
+            
+            defaultStrategy.forEach((week, index) => {
+                html += `<div class="video-week">
+                    <strong>${week}</strong>
+                    <p>Target: ${audience} | Focus: ${challenge}</p>
+                </div>`;
+            });
+            
+            html += '</div>';
+            html += '<div class="recommendation">💡 This strategy positions your team as the go-to technical authority while addressing your audience\'s biggest challenges.</div>';
+            
+            document.getElementById('video-timeline').innerHTML = html;
+            document.getElementById('video-results').classList.add('show');
+        }
+
+        function analyzeCompetitors() {
+            const companyName = document.getElementById('company-name').value;
+            const competitors = document.getElementById('competitors').value;
+            
+            if (!companyName || !competitors) {
+                alert('Please enter your company name and competitors');
+                return;
+            }
+            
+            const competitorList = competitors.split(',').map(c => c.trim());
+            
+            let html = '<h4>Competitive Analysis Insights</h4>';
+            
+            competitorList.forEach((competitor, index) => {
+                const marketingScore = Math.floor(Math.random() * 40) + 60; // Random score 60-100
+                const contentScore = Math.floor(Math.random() * 30) + 50; // Random score 50-80
+                const socialScore = Math.floor(Math.random() * 35) + 45; // Random score 45-80
+                
+                html += `<div class="assessment-card">
+                    <h4>${competitor}</h4>
+                    <div class="metric">
+                        <span class="metric-label">Overall Digital Presence</span>
+                        <span class="metric-value">${marketingScore}/100</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Content Marketing</span>
+                        <span class="metric-value">${contentScore}/100</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Social Media Engagement</span>
+                        <span class="metric-value">${socialScore}/100</span>
+                    </div>
+                </div>`;
+            });
+            
+            html += '<div class="recommendation">🎯 Key Opportunity: Most competitors are underinvesting in video content and technical thought leadership.</div>';
+            html += '<div class="warning">⚠️ Competitive Threat: Leading competitor is gaining market share through consistent digital presence.</div>';
+            
+            document.getElementById('competitor-insights').innerHTML = html;
+            document.getElementById('competitor-results').classList.add('show');
+        }
+
+        function generateLeadScoring() {
+            const minCompanySize = document.getElementById('min-company-size').value;
+            const minRevenue = document.getElementById('min-revenue').value;
+            const decisionMaker = document.getElementById('decision-maker').value;
+            const budgetRange = document.getElementById('budget-range').value;
+            
+            const checkedIndustries = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+            
+            let html = '<h4>Lead Scoring Criteria</h4>';
+            
+            html += `<div class="assessment-card">
+                <h4>A+ Leads (80-100 points)</h4>
+                <ul>
+                    <li>Company size: ${minCompanySize}+ employees</li>
+                    <li>Annual revenue: $${parseInt(minRevenue).toLocaleString()}+</li>
+                    <li>Target industries: ${checkedIndustries.join(', ')}</li>
+                    <li>Decision maker: ${decisionMaker}</li>
+                    <li>Budget range: ${budgetRange}</li>
+                    <li>Engagement: Multiple touchpoints, downloaded resources</li>
+                </ul>
+            </div>`;
+            
+            html += `<div class="assessment-card">
+                <h4>B+ Leads (60-79 points)</h4>
+                <ul>
+                    <li>Company size: ${Math.floor(minCompanySize * 0.7)}+ employees</li>
+                    <li>Right industry but smaller budget</li>
+                    <li>Influencer but not primary decision maker</li>
+                    <li>Moderate engagement level</li>
+                </ul>
+            </div>`;
+            
+            html += `<div class="assessment-card">
+                <h4>C+ Leads (40-59 points)</h4>
+                <ul>
+                    <li>Outside target industries but relevant</li>
+                    <li>Smaller company size but growth potential</li>
+                    <li>Early-stage research behavior</li>
+                </ul>
+            </div>`;
+            
+            html += '<div class="recommendation">🎯 Focus 80% of sales effort on A+ leads, 20% on B+ leads. Nurture C+ leads with automated sequences.</div>';
+            
+            document.getElementById('scoring-framework').innerHTML = html;
+            document.getElementById('scoring-results').classList.add('show');
+        }
+
+        function captureLeadAndDownload() {
+            const name = document.getElementById('lead-name').value;
+            const email = document.getElementById('lead-email').value;
+            const company = document.getElementById('lead-company').value;
+            
+            if (!name || !email || !company) {
+                alert('Please fill in all fields to download your report');
+                return;
+            }
+            
+            // In a real implementation, this would send data to your CRM/database
+            console.log('Lead captured:', { name, email, company });
+            
+            // Show success message
+            alert(`Thank you ${name}! Your comprehensive analysis report has been sent to ${email}. We'll also follow up with personalized recommendations for ${company}.`);
+            
+            // In a real implementation, this would generate and download a PDF report
+            // For now, we'll just show a success message
+        }
+    </script>
+</body>
+</html>
